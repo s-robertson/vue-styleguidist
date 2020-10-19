@@ -187,7 +187,6 @@ importers:
       '@znck/prop-types': 0.6.3
       dog-names: 1.0.2
       lodash: 4.17.19
-      vue-types: 1.7.0_vue@3.0.1
     devDependencies:
       '@babel/core': 7.11.1
       '@babel/plugin-transform-runtime': 7.11.0_@babel+core@7.11.1
@@ -217,7 +216,6 @@ importers:
       vue: 3.X.X
       vue-loader: ^16.0.0-beta.8
       vue-styleguidist: ^4.33.2
-      vue-types: ^1.5.0
       webpack: ^4.44.1
       webpack-bundle-analyzer: 3.3.2
   examples/customised:
@@ -231,7 +229,6 @@ importers:
       '@vue/babel-plugin-jsx': 1.0.0-rc.3_@babel+core@7.11.1
       babel-core: 7.0.0-bridge.0_@babel+core@7.11.1
       babel-loader: 8.1.0_7e7526731d462686de4308c8ba1cfd85
-      babel-plugin-transform-vue-jsx: 4.0.1
       concurrently: 4.1.2
       css-loader: 3.6.0_webpack@4.44.1
       lodash: 4.17.19
@@ -254,7 +251,6 @@ importers:
       '@vue/babel-plugin-jsx': ^1.0.0-rc.3
       babel-core: ^7.0.0-bridge.0
       babel-loader: ^8.0.5
-      babel-plugin-transform-vue-jsx: 4.0.1
       concurrently: ^4.1.1
       css-loader: ^3.6.0
       dog-names: ^1.0.2
@@ -6620,14 +6616,6 @@ packages:
       node: '>= 10.14.2'
     resolution:
       integrity: sha512-B/hVMRv8Nh1sQ1a3EY8I0n4Y1Wty3NrR5ebOyVT302op+DOAau+xNEImGMsUWOC3++ZlMooCytKz+NgN8aKGbA==
-  /babel-plugin-transform-vue-jsx/4.0.1:
-    dependencies:
-      esutils: 2.0.3
-    dev: true
-    peerDependencies:
-      babel-helper-vue-jsx-merge-props: ^2.0.0
-    resolution:
-      integrity: sha512-wbOz7ITB5cloLSjKUU1hWn8zhR+Dwah/RZiTiJY/CQliCwhowmzu6m7NEF+y5EJX/blDzGjRtZvC10Vdb3Q7vw==
   /babel-polyfill/6.26.0:
     dependencies:
       babel-runtime: 6.26.0
@@ -12999,14 +12987,6 @@ packages:
       node: '>=0.10.0'
     resolution:
       integrity: sha512-h5PpgXkWitc38BBMYawTYMWJHFZJVnBquFE57xFpjB8pJFiF6gZ+bU+WyI/yqXiFR5mdLsgYNaPe8uao6Uv9Og==
-  /is-plain-object/3.0.0:
-    dependencies:
-      isobject: 4.0.0
-    dev: false
-    engines:
-      node: '>=0.10.0'
-    resolution:
-      integrity: sha512-tZIpofR+P05k8Aocp7UI/2UTa9lTJSebCXpFFoR9aibpokDj/uXBsJ8luUu0tTVYKkMU6URDUuOfJZ7koewXvg==
   /is-plain-object/4.1.1:
     dev: true
     engines:
@@ -13193,12 +13173,6 @@ packages:
       node: '>=0.10.0'
     resolution:
       integrity: sha1-TkMekrEalzFjaqH5yNHMvP2reN8=
-  /isobject/4.0.0:
-    dev: false
-    engines:
-      node: '>=0.10.0'
-    resolution:
-      integrity: sha512-S/2fF5wH8SJA/kmwr6HYhK/RI/OkhD84k8ntalo0iJjZikgq1XFvR5M8NPT1x5F7fBwCG3qHfnzeP/Vh/ZxCUA==
   /isstream/0.1.2:
     dev: true
     resolution:
@@ -21849,17 +21823,6 @@ packages:
     dev: true
     resolution:
       integrity: sha512-4gDntzrifFnCEvyoO8PqyJDmguXgVPxKiIxrBKjIowvL9l+N66196+72XVYR8BBf1Uv1Fgt3bGevJ+sEmxfZzw==
-  /vue-types/1.7.0_vue@3.0.1:
-    dependencies:
-      is-plain-object: 3.0.0
-      vue: 3.0.1
-    dev: false
-    engines:
-      node: '>=10.15.0'
-    peerDependencies:
-      vue: '*'
-    resolution:
-      integrity: sha512-MbhuWukmcBJHdfXAdLerbP29i3j2HAJoKwEv7No2Jh/YNl9dOKsNBfvMOkf0SS8VCuWd1/JBX4NnGaGUojbkUA==
   /vue/2.6.11:
     resolution:
       integrity: sha512-VfPwgcGABbGAue9+sfrD4PuwFar7gPb1yl1UK1MwXoQPAw0BKSqWfoYCT/ThFrdEVWoI51dBuyCoiNU9bZDZxQ==
