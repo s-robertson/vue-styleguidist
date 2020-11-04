@@ -23,21 +23,44 @@ describe('eventHandler', () => {
 		mockGetEventDescriptor.mockReturnValue(mockEventDescriptor)
 	})
 
-	it('should find events emmitted', () => {
-		const src = `
-    export default {
-      methods: {
-        testEmit() {
-            /**
-             * Describe the event
-             * @property {number} prop1
-             * @param {number} prop2
-             */
-            this.$emit('success', 1, 2)
-        }
-      }
-    }
-    `
+	test.each([
+		[
+			'options',
+			`
+			export default {
+				methods: {
+					testEmit() {
+							/**
+							 * Describe the event
+							 * @property {number} prop1
+							 * @param {number} prop2
+							 */
+							this.$emit('success', 1, 2)
+					}
+				}
+			}
+			`
+		],
+		[
+			'composition',
+			`
+			export default {
+				setup(props, context) {
+					const testEmit = () => {
+						/**
+						 * Describe the event
+						 * @property {number} prop1
+						 * @param {number} prop2
+						 */
+						context.emit('success', 1, 2)
+					}
+					
+					return { testEmit }
+				}
+			}
+			`
+		],
+	])('%s API: should find events emitted', (api, src) => {
 		const def = parse(src)
 		if (def.component) {
 			eventHandler(documentation, def.component, def.ast)
@@ -64,19 +87,40 @@ describe('eventHandler', () => {
 		expect(mockEventDescriptor).toMatchObject(eventComp)
 	})
 
-	it('should find simple events emmitted', () => {
-		const src = `
-    export default {
-      methods: {
-        testEmit() {
-            /**
-             * Describe the event
-             */
-            this.$emit('success')
-        }
-      }
-    }
-    `
+	test.each([
+		[
+			'options',
+			`
+			export default {
+				methods: {
+					testEmit() {
+							/**
+							 * Describe the event
+							 */
+							this.$emit('success')
+					}
+				}
+			}
+			`,
+		],
+		[
+			'composition',
+			`
+			export default {
+				setup(props, context) {
+					const testEmit = () => {
+						/**
+						 * Describe the event
+						 */
+					  context.emit('success')
+					}
+					
+					return { testEmit }
+				}
+			}
+			`,
+		],
+	])('%s API: should find simple events emitted', (api, src) => {
 		const def = parse(src)
 		if (def.component) {
 			eventHandler(documentation, def.component, def.ast)
@@ -84,16 +128,34 @@ describe('eventHandler', () => {
 		expect(mockEventDescriptor.properties).toBeUndefined()
 	})
 
-	it('should find events undocumented properties', () => {
-		const src = `
-    export default {
-      methods: {
-        testEmit() {
-            this.$emit('success', 1, 2)
-        }
-      }
-    }
-    `
+	test.each([
+		[
+			'options',
+			`
+			export default {
+				methods: {
+					testEmit() {
+							this.$emit('success', 1, 2)
+					}
+				}
+			}
+			`,
+		],
+		[
+			'composition',
+			`
+			export default {
+				setup(props, context) {
+					const testEmit = () => {
+						context.emit('success', 1, 2)
+					}
+					
+					return { testEmit }
+				}
+			}
+			`,
+		],
+	])('%s API: should find events undocumented properties', (api, src) => {
 		const def = parse(src)
 		if (def.component) {
 			eventHandler(documentation, def.component, def.ast)
@@ -116,17 +178,35 @@ describe('eventHandler', () => {
 		expect(mockEventDescriptor).toMatchObject(eventComp)
 	})
 
-	it('should find events names stored in variables', () => {
-		const src = `
-    const successEventName = 'success';
-    export default {
-      methods: {
-        testEmit() {
-            this.$emit(successEventName, 1, 2)
-        }
-      }
-    }
-    `
+	test.each([
+		[
+			'options',
+			`
+			const successEventName = 'success';
+			export default {
+				methods: {
+					testEmit() {
+							this.$emit(successEventName, 1, 2)
+					}
+				}
+			}
+			`,
+		],
+		[
+			'composition',
+			`
+			const successEventName = 'success';
+			export default {
+				setup(props, context) {
+					const testEmit = () => {
+						context.emit(successEventName, 1, 2)
+					}
+					return { testEmit }
+				}
+			}
+			`,
+		],
+	])('%s API: should find event names stored in variables', (api, src) => {
 		const def = parse(src)
 		if (def.component) {
 			eventHandler(documentation, def.component, def.ast)
@@ -134,22 +214,46 @@ describe('eventHandler', () => {
 		expect(documentation.getEventDescriptor).toHaveBeenCalledWith('success')
 	})
 
-	it('should allow the use of an event multiple times', () => {
-		const src = `
-    export default {
-      methods: {
-        testEmit() {
-			/**
-			 * Describe the event
-			 * @property {number} prop1
-			 * @property {string} msg
-			 */
-			this.$emit('success', 3, "hello")
-			this.$emit('success', 1)
-        }
-      }
-    }
-    `
+	test.each([
+		[
+			'options',
+			`
+			export default {
+				methods: {
+					testEmit() {
+						/**
+						 * Describe the event
+						 * @property {number} prop1
+						 * @property {string} msg
+						 */
+						this.$emit('success', 3, "hello")
+						this.$emit('success', 1)
+					}
+				}
+			}
+			`,
+		],
+		[
+			'composition',
+			`
+			export default {
+				setup(props, context) {
+				  const testEmit = () => {
+						/**
+						 * Describe the event
+						 * @property {number} prop1
+						 * @property {string} msg
+						 */
+						context.emit('success', 3, "hello")
+						context.emit('success', 1)
+				  }
+				  
+				  return { testEmit }
+				}
+			}
+			`,
+		],
+	])('%s API: should allow the use of an event multiple times', (api, src) => {
 		const def = parse(src)
 		if (def.component) {
 			eventHandler(documentation, def.component, def.ast)
@@ -175,19 +279,39 @@ describe('eventHandler', () => {
 		expect(mockEventDescriptor).toMatchObject(eventComp)
 	})
 
-	it('should find events whose names are only specified in the JSDoc', () => {
-		const src = `
-    export default {
-      methods: {
-        testEmit() {
-            /**
-             * @event success
-             */
-            this.$emit(A.successEventName, 1, 2)
-        }
-      }
-    }
-    `
+	test.each([
+		[
+			'options',
+			`
+			export default {
+				methods: {
+					testEmit() {
+						/**
+						 * @event success
+						 */
+						this.$emit(A.successEventName, 1, 2)
+					}
+				}
+			}
+			`,
+		],
+		[
+			'composition',
+			`
+			export default {
+				setup(props, context) {
+					const testEmit = () => {
+						/**
+						 * @event success
+						 */
+					  context.emit(A.successEventName, 1, 2)
+					}
+				  return { testEmit }
+				}
+			}
+			`,
+		],
+	])('%s API: should find events whose names are only specified in the JSDoc', (api, src) => {
 		const def = parse(src)
 		if (def.component) {
 			eventHandler(documentation, def.component, def.ast)
@@ -195,16 +319,32 @@ describe('eventHandler', () => {
 		expect(documentation.getEventDescriptor).toHaveBeenCalledWith('success')
 	})
 
-	it('should not fail when event name cannot be found', () => {
-		const src = `
-    export default {
-      methods: {
-        testEmit(success) {
-            this.$emit(success, 1, 2)
-        }
-      }
-    }
-		`
+	test.each([
+		[
+			'options',
+			`
+			export default {
+				methods: {
+					testEmit(success) {
+							this.$emit(success, 1, 2)
+					}
+				}
+			}
+			`,
+		],
+		[
+			'composition',
+			`
+			export default {
+				setup(props, context) {
+					const testEmit = (success) => {
+						context.emit(success, 1, 2)
+					}
+				}
+			}
+			`,
+		],
+	])('%s API: should not fail when event name cannot be found', (api, src) => {
 		const def = parse(src)
 		expect(() => eventHandler(documentation, def.component as any, def.ast)).not.toThrow()
 	})
@@ -366,4 +506,45 @@ describe('eventHandler', () => {
 			expect(mockEventDescriptor).toMatchObject(eventComp)
 		})
 	})
+
+	describe('composition API events', () => {
+		it('should find events emitted via context', () => {
+			const src = `
+			export default {
+				setup(props, context) {
+					/**
+					 * Describe the event
+					 * @property {number} prop1
+					 * @param {number} prop2
+					 */
+					context.emit('success', 1, 2)
+				},
+			}
+			`
+			const def = parse(src)
+			if (def.component) {
+				eventHandler(documentation, def.component, def.ast)
+			}
+			const eventComp: EventDescriptor = {
+				name: 'success',
+				description: 'Describe the event',
+				properties: [
+					{
+						name: 'prop1',
+						type: {
+							names: ['number']
+						}
+					},
+					{
+						name: 'prop2',
+						type: {
+							names: ['number']
+						}
+					}
+				]
+			}
+			expect(documentation.getEventDescriptor).toHaveBeenCalledWith('success')
+			expect(mockEventDescriptor).toMatchObject(eventComp)
+		})
+	});
 })

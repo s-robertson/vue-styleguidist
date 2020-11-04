@@ -1,5 +1,6 @@
 import * as bt from '@babel/types'
 import { NodePath } from 'ast-types/lib/node-path'
+import { namedTypes } from 'ast-types'
 import { visit } from 'recast'
 import Documentation, {
 	BlockTag,
@@ -26,6 +27,25 @@ function getCommentBlockAndTags(
 	return docBlock ? getDoclets(docBlock) : null
 }
 
+function isOptionsApiEmit(expression: NodePath<namedTypes.CallExpression>): boolean {
+	return (
+		bt.isMemberExpression(expression.node.callee) &&
+		bt.isIdentifier(expression.node.callee.property) &&
+		bt.isThisExpression(expression.node.callee.object) &&
+		expression.node.callee.property.name==='$emit'
+	)
+}
+
+function isCompositionApiEmit(expression: NodePath<namedTypes.CallExpression>): boolean {
+	return (
+		bt.isMemberExpression(expression.node.callee) &&
+		bt.isIdentifier(expression.node.callee.property) &&
+		bt.isIdentifier(expression.node.callee.object) &&
+		expression.node.callee.object.name === 'context' &&
+		expression.node.callee.property.name === 'emit'
+	);
+}
+
 /**
  * Extracts events information from a VueJs component
  * wether it's a class based component or an option based one
@@ -45,14 +65,10 @@ export default function eventHandler(
 	}
 
 	// browse the entirety of the code inside the component to look for this.$emit
+	// or context.emit
 	visit(path.node, {
 		visitCallExpression(pathExpression) {
-			if (
-				bt.isMemberExpression(pathExpression.node.callee) &&
-				bt.isThisExpression(pathExpression.node.callee.object) &&
-				bt.isIdentifier(pathExpression.node.callee.property) &&
-				pathExpression.node.callee.property.name === '$emit'
-			) {
+			if (isOptionsApiEmit(pathExpression) || isCompositionApiEmit(pathExpression)) {
 				const args = pathExpression.node.arguments
 				if (!args.length) {
 					return false
